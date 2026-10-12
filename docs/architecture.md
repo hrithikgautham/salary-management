@@ -24,7 +24,7 @@ flowchart LR
 2. Supabase returns a session and access token.
 3. An Angular HTTP interceptor attaches `Authorization: Bearer <access_token>` to `/api/**` requests.
 4. Spring Security validates the JWT signature against the project's published JWKS, validates issuer and time claims, and derives the authenticated principal from `sub`.
-5. Missing or invalid tokens receive HTTP 401. The API does not accept a user ID supplied by the browser as proof of identity.
+5. Missing or invalid tokens receive HTTP 401. A valid token for an email outside `SUPABASE_ALLOWED_HR_EMAILS` is denied by the API (HTTP 403). The API does not accept a user ID supplied by the browser as proof of identity.
 
 JWT signing keys should be configured with asymmetric signing enabled in Supabase. If a project is configured to use legacy HS256 signing, this JWKS verifier will reject those tokens; do not copy the JWT secret into the app to work around it. Configure asymmetric signing or implement a server-only legacy verification option if you consciously choose that trade-off.
 

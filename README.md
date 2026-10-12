@@ -9,7 +9,7 @@ A full-stack salary administration tool for an HR manager operating across count
 - Employee directory with server-side filtering, sorting, and pagination.
 - Create and edit employee salary records, with optimistic concurrency and a salary audit trail.
 - Dashboard KPIs and insights grouped by country, department, and currency. Values in different currencies are deliberately not summed together.
-- SQL migration, repeatable 10,000-record seed script, backend unit/integration tests, and deployment instructions.
+- SQL migrations, a repeatable 10,000-record seed script, fast backend/frontend tests, and deployment instructions.
 
 ## Repository layout
 
@@ -23,23 +23,23 @@ A full-stack salary administration tool for an HR manager operating across count
 
 - Node.js 20.19+ or 22.12+, npm.
 - Java 21.
-- Maven 3.9+ (or use the included Maven wrapper after generating it with `mvn wrapper:wrapper`).
+- Maven 3.9+.
 - Supabase project with email/password provider enabled.
 
 ## Local setup
 
-1. In Supabase SQL Editor, run `infra/supabase/migrations/001_initial_schema.sql`.
+1. In Supabase SQL Editor, run `infra/supabase/migrations/001_initial_schema.sql`, then `infra/supabase/migrations/002_lock_down_browser_data_access.sql`.
 2. In SQL Editor, run `infra/scripts/seed-employees.sql` to insert 10,000 deterministic synthetic employees. The script is idempotent by `employee_number`.
-3. Copy `backend/.env.example` to `backend/.env` and fill in your local environment. Do not commit secrets.
-4. Start the API from `backend/` with `./mvnw spring-boot:run` (or `mvn spring-boot:run` if Maven is installed).
-5. Copy `frontend/src/environments/environment.example.ts` to `frontend/src/environments/environment.ts` and fill in Supabase URL, publishable key, and API base URL.
+3. Copy `backend/.env.example` to `backend/.env` and fill in your local database password and approved HR email. Spring Boot imports this local properties file; `.env` is git-ignored. Do not commit secrets.
+4. Start the API from `backend/` with `mvn spring-boot:run`.
+5. `frontend/src/environments/environment.ts` is preconfigured with this project’s public Supabase URL and publishable key and the local API URL. For production, set `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY`, and `API_BASE_URL` in Vercel so the build generates the production environment file.
 6. From `frontend/`, run `npm install` then `npm start` and open `http://localhost:4200`.
 
-Supabase's publishable key is intended for browser use. Never place a Supabase secret/service-role key in Angular, Vercel client environment variables, or a Git repository. Salary data access goes through Spring Boot; database credentials remain server-only.
+Supabase's publishable key is intentionally public and may be included in Angular. Never place a Supabase secret/service-role key, database password, or user token in browser code or a Git repository. Salary data access goes through Spring Boot; access is guarded by verified JWTs, an HR email allowlist, and database policies.
 
 ## Tests
 
-- Backend: `cd backend && ./mvnw test`.
+- Backend: `cd backend && mvn test`.
 - Frontend: `cd frontend && npm test -- --watch=false`.
 
 ## Production readiness notes

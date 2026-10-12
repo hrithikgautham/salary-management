@@ -16,7 +16,7 @@ Supabase supplies managed Postgres and email/password identity without inventing
 
 ## 4. JWT verification using JWKS
 
-The backend uses Spring Security's resource-server JWT support and issuer-based discovery/JWKS verification, which allows key rotation without embedding a shared signing secret in source. The Supabase project should use asymmetric JWT signing keys. Do not publish server credentials. A production hardening item is an explicit allowed-issuer configuration, clock synchronization, and test coverage against real token fixtures from the target project's signing setup.
+The backend uses Spring Security's resource-server JWT support and the project JWKS endpoint, validates issuer and time claims, requires the expected `authenticated` audience, and restricts access to a server-configured allowlist of HR email addresses. This allows key rotation without embedding a shared signing secret in source. The Supabase project should use asymmetric JWT signing keys. Do not publish server credentials. A production hardening item is an explicit allowed-issuer configuration, clock synchronization, and test coverage against real token fixtures from the target project's signing setup.
 
 ## 5. Salary as amount plus currency
 
