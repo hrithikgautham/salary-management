@@ -20,8 +20,8 @@ public record Employee(
     BigDecimal salaryAmount,
     String salaryCurrency,
     long version,
-    OffsetDateTime createdAt,
-    OffsetDateTime updatedAt
+    java.time.Instant createdAt,
+    java.time.Instant updatedAt
 ) {
     public String fullName() { return firstName + " " + lastName; }
 }

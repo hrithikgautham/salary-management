@@ -35,7 +35,7 @@ public class EmployeeRepository {
             rs.getString("country_name"), rs.getString("department"), rs.getString("job_title"),
             rs.getString("employment_status"), rs.getObject("hire_date", LocalDate.class),
             rs.getBigDecimal("salary_amount"), rs.getString("salary_currency").trim(), rs.getLong("version"),
-            rs.getObject("created_at", OffsetDateTime.class), rs.getObject("updated_at", OffsetDateTime.class));
+            rs.getTimestamp("created_at").toInstant(), rs.getTimestamp("updated_at").toInstant());
     }
 
     public PageResponse<Employee> search(String query, String country, String department, String status,
@@ -62,6 +62,7 @@ public class EmployeeRepository {
         return jdbc.query("select * from public.employees where id = ?", EMPLOYEE_MAPPER, id).stream().findFirst();
     }
 
+    @org.springframework.transaction.annotation.Transactional
     public Employee create(EmployeeRequest request) {
         UUID id = UUID.randomUUID();
         jdbc.update("""
