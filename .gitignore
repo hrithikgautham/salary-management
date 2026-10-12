@@ -10,7 +10,7 @@ frontend/dist/
 frontend/.angular/
 
 # Local config
-frontend/src/environments/environment.ts
+frontend/src/environments/environment.prod.ts
 frontend/src/environments/environment.development.ts
 
 # IDE / OS
