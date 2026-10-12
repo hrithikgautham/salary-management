@@ -1,0 +1,20 @@
+# Java
+backend/target/
+*.class
+.env
+**/.env
+
+# Node / Angular
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
+
+# Local config
+frontend/src/environments/environment.ts
+frontend/src/environments/environment.development.ts
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
+*.log
