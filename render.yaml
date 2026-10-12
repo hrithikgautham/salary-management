@@ -14,5 +14,9 @@ services:
         sync: false
       - key: SUPABASE_ISSUER_URI
         value: https://vzzhlhkmaabmmjvhwgeh.supabase.co/auth/v1
+      - key: SUPABASE_JWK_SET_URI
+        value: https://vzzhlhkmaabmmjvhwgeh.supabase.co/auth/v1/.well-known/jwks.json
+      - key: SUPABASE_ALLOWED_HR_EMAILS
+        sync: false
       - key: APP_CORS_ALLOWED_ORIGINS
         sync: false

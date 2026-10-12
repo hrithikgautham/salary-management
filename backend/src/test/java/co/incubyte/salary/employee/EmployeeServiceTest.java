@@ -45,10 +45,24 @@ class EmployeeServiceTest {
     }
 
     @Test
+    void rejectsUnsupportedSortField() {
+        ResponseStatusException ex = assertThrows(ResponseStatusException.class,
+            () -> service.search(null, null, null, null, 0, 25, "salary;drop table employees", "asc"));
+        assertEquals(400, ex.getStatusCode().value());
+    }
+
+    @Test
+    void rejectsUnsupportedSortDirection() {
+        ResponseStatusException ex = assertThrows(ResponseStatusException.class,
+            () -> service.search(null, null, null, null, 0, 25, "last_name", "sideways"));
+        assertEquals(400, ex.getStatusCode().value());
+    }
+
+    @Test
     void normalizesCountryFilterAndDelegatesValidatedPage() {
-        when(repository.search("Anu", "in", "Engineering", "ACTIVE", 0, 10, "last_name", "asc"))
+        when(repository.search("Anu", "IN", "Engineering", "ACTIVE", 0, 10, "last_name", "asc"))
             .thenReturn(PageResponse.of(List.of(), 0, 10, 0));
         service.search("Anu", "in", "Engineering", "ACTIVE", 0, 10, "last_name", "asc");
-        verify(repository).search("Anu", "in", "Engineering", "ACTIVE", 0, 10, "last_name", "asc");
+        verify(repository).search("Anu", "IN", "Engineering", "ACTIVE", 0, 10, "last_name", "asc");
     }
 }

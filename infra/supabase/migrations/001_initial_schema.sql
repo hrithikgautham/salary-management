@@ -46,7 +46,7 @@ create index if not exists idx_salary_audit_employee_changed
   on public.salary_audit (employee_id, changed_at desc);
 
 create or replace function public.touch_employee_updated_at()
-returns trigger language plpgsql as $$
+returns trigger language plpgsql set search_path = '' as $$
 begin
   new.updated_at = now();
   return new;
@@ -62,3 +62,13 @@ for each row execute function public.touch_employee_updated_at();
 -- accidental direct Data API access; the Spring service connects as its configured DB role.
 alter table public.employees enable row level security;
 alter table public.salary_audit enable row level security;
+
+
+-- Explicit deny policies make the intended boundary visible in Supabase's advisors:
+-- browser clients may authenticate, but only the Spring service may read salary data.
+drop policy if exists deny_browser_access_employees on public.employees;
+create policy deny_browser_access_employees on public.employees
+  for all to anon, authenticated using (false) with check (false);
+drop policy if exists deny_browser_access_salary_audit on public.salary_audit;
+create policy deny_browser_access_salary_audit on public.salary_audit
+  for all to anon, authenticated using (false) with check (false);

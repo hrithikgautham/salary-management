@@ -1,6 +1,7 @@
 package co.incubyte.salary.employee;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 import co.incubyte.salary.common.PageResponse;
@@ -24,7 +25,13 @@ public class EmployeeService {
         if (country != null && !country.isBlank() && !country.matches("[A-Za-z]{2}")) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Country must be a two-letter ISO code");
         }
-        return repository.search(query, country == null ? null : country.toUpperCase(), department, status, page, size, sort, direction);
+        if (sort != null && !sort.isBlank() && !List.of("employee_number", "first_name", "last_name", "department", "country_code", "salary_amount", "hire_date", "updated_at").contains(sort)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported sort field");
+        }
+        if (direction != null && !direction.isBlank() && !List.of("asc", "desc").contains(direction.toLowerCase(Locale.ROOT))) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Sort direction must be asc or desc");
+        }
+        return repository.search(query, country == null ? null : country.toUpperCase(Locale.ROOT), department, status, page, size, sort, direction);
     }
 
     public Employee get(UUID id) {

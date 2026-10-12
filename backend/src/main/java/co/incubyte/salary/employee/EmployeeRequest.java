@@ -3,6 +3,7 @@ package co.incubyte.salary.employee;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -20,6 +21,6 @@ public record EmployeeRequest(
     @NotBlank @Size(max = 120) String jobTitle,
     @NotBlank @Pattern(regexp = "ACTIVE|ON_LEAVE|TERMINATED") String employmentStatus,
     @NotNull LocalDate hireDate,
-    @NotNull @DecimalMin(value = "0.00", inclusive = true) BigDecimal salaryAmount,
+    @NotNull @DecimalMin(value = "0.00", inclusive = true) @Digits(integer = 12, fraction = 2) BigDecimal salaryAmount,
     @NotBlank @Pattern(regexp = "[A-Z]{3}") String salaryCurrency
 ) {}

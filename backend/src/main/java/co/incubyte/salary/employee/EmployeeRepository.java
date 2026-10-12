@@ -31,7 +31,7 @@ public class EmployeeRepository {
     private static Employee mapEmployee(ResultSet rs) throws SQLException {
         return new Employee(
             rs.getObject("id", UUID.class), rs.getString("employee_number"), rs.getString("first_name"),
-            rs.getString("last_name"), rs.getString("email"), rs.getString("country_code"),
+            rs.getString("last_name"), rs.getString("email"), rs.getString("country_code").trim(),
             rs.getString("country_name"), rs.getString("department"), rs.getString("job_title"),
             rs.getString("employment_status"), rs.getObject("hire_date", LocalDate.class),
             rs.getBigDecimal("salary_amount"), rs.getString("salary_currency").trim(), rs.getLong("version"),
@@ -83,6 +83,9 @@ public class EmployeeRepository {
             throw new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.CONFLICT,
                 "This record changed since you opened it. Reload and retry.");
         }
+        if (before.salaryAmount().compareTo(request.salaryAmount()) == 0 && before.salaryCurrency().equals(request.salaryCurrency())) {
+            return before;
+        }
         int updated = jdbc.update("""
             update public.employees set salary_amount = ?, salary_currency = ?, version = version + 1
             where id = ? and version = ?
@@ -112,7 +115,7 @@ public class EmployeeRepository {
               rs.getString("old_salary_currency").trim(), rs.getString("new_salary_currency").trim(), rs.getString("reason")), employeeId);
     }
 
-    public List<String> countries() { return jdbc.queryForList("select distinct country_code from public.employees order by country_code", String.class); }
+    public List<String> countries() { return jdbc.queryForList("select distinct country_code from public.employees order by country_code", String.class).stream().map(String::trim).toList(); }
     public List<String> departments() { return jdbc.queryForList("select distinct department from public.employees order by department", String.class); }
     public long countEmployees() { Long value = jdbc.queryForObject("select count(*) from public.employees", Long.class); return value == null ? 0 : value; }
 }
