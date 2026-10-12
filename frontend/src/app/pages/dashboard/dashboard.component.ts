@@ -1,10 +1,10 @@
 import { Component, inject } from '@angular/core';
-import { CommonModule, CurrencyPipe, DatePipe } from '@angular/common';
+import { CommonModule, CurrencyPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ApiService } from '../../core/api.service';
 import { DashboardSummary } from '../../core/models';
 
-@Component({ selector: 'app-dashboard', standalone: true, imports: [CommonModule, RouterLink, CurrencyPipe, DatePipe], template: `
+@Component({ selector: 'app-dashboard', standalone: true, imports: [CommonModule, RouterLink, CurrencyPipe], template: `
   <section class="page-content">
     <div class="page-heading heading-with-action"><div><div class="eyebrow">MONDAY, PEOPLE OPERATIONS</div><h1>Good to see you.</h1><p>Here's what's happening across your workforce.</p></div><a class="button primary" routerLink="/employees/new">＋ Add employee</a></div>
     <div class="loading-state" *ngIf="loading">Loading your workforce overview…</div>
